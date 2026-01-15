@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
 export default defineConfig({
-  site: 'https://yourusername.github.io',
+  site: 'https://raamb.github.io',
   base: '/skills-repo',
   integrations: [react()],
   output: 'static',
