@@ -5,14 +5,13 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string",
-          "minLength": 3,
-          "maxLength": 50
+          "type": "string"
         },
         "description": {
-          "type": "string",
-          "minLength": 10,
-          "maxLength": 200
+          "type": "string"
+        },
+        "allowed-tools": {
+          "type": "string"
         },
         "author": {
           "type": "string"
@@ -44,7 +43,7 @@
               "format": "unix-time"
             }
           ],
-          "default": "2026-01-15T10:29:09.956Z"
+          "default": "2026-01-15T11:11:17.951Z"
         },
         "$schema": {
           "type": "string"
@@ -52,8 +51,7 @@
       },
       "required": [
         "name",
-        "description",
-        "author"
+        "description"
       ],
       "additionalProperties": false
     }
