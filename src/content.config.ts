@@ -3,9 +3,13 @@ import { defineCollection, z } from 'astro:content';
 const skillsCollection = defineCollection({
   type: 'content',
   schema: z.object({
-    name: z.string().min(3).max(50),
-    description: z.string().min(10).max(200),
-    author: z.string(),
+    // Claude Code native fields
+    name: z.string(),
+    description: z.string(),
+    'allowed-tools': z.string().optional(),
+
+    // Registry metadata (optional)
+    author: z.string().optional(),
     authorUrl: z.string().url().optional(),
     tags: z.array(z.string()).max(5).default([]),
     dateAdded: z.coerce.date().default(() => new Date()),
@@ -15,12 +19,15 @@ const skillsCollection = defineCollection({
 const agentsCollection = defineCollection({
   type: 'content',
   schema: z.object({
-    name: z.string().min(3).max(50),
-    description: z.string().min(10).max(200),
-    author: z.string(),
+    // Claude Code native fields
+    name: z.string(),
+    description: z.string(),
+    model: z.string().optional(),
+
+    // Registry metadata (optional)
+    author: z.string().optional(),
     authorUrl: z.string().url().optional(),
     tags: z.array(z.string()).max(5).default([]),
-    model: z.string().optional(),
     dateAdded: z.coerce.date().default(() => new Date()),
   }),
 });
