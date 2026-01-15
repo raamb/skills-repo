@@ -25,7 +25,8 @@ const itemsWithCode = await Promise.all(
     slug: entry.slug,
     type: 'agent',
     name: entry.data.name,
-    code: entry.body,
+    frontmatter: entry.data,
+    body: entry.body,
   }))
 );
 ---

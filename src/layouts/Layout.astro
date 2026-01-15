@@ -83,6 +83,27 @@ const { title } = Astro.props;
     font-size: 1.25rem;
   }
 
+  .modal-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .modal-action-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+
+  .modal-action-btn:hover {
+    background: #0056b3;
+  }
+
   .modal-close {
     background: none;
     border: none;
