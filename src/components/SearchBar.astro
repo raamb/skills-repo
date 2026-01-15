@@ -1,0 +1,49 @@
+---
+// Client-side search that filters visible cards
+---
+
+<div class="search-container">
+  <input
+    type="search"
+    id="search-input"
+    placeholder="Search by name or description..."
+    autocomplete="off"
+  />
+</div>
+
+<style>
+  .search-container {
+    margin: 1.5rem 0;
+  }
+
+  #search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #search-input:focus {
+    border-color: #0066cc;
+  }
+</style>
+
+<script>
+  const input = document.getElementById('search-input') as HTMLInputElement;
+
+  input?.addEventListener('input', (e) => {
+    const query = (e.target as HTMLInputElement).value.toLowerCase();
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+      const title = card.querySelector('.card-title')?.textContent?.toLowerCase() || '';
+      const desc = card.querySelector('.card-description')?.textContent?.toLowerCase() || '';
+      const matches = title.includes(query) || desc.includes(query);
+      (card as HTMLElement).style.display = matches ? '' : 'none';
+    });
+  });
+</script>

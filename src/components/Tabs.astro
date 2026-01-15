@@ -1,0 +1,48 @@
+---
+interface Props {
+  active: 'skills' | 'agents';
+}
+
+const { active } = Astro.props;
+---
+
+<nav class="tabs">
+  <a
+    href={import.meta.env.BASE_URL + '/skills'}
+    class:list={['tab', { active: active === 'skills' }]}
+  >
+    Skills
+  </a>
+  <a
+    href={import.meta.env.BASE_URL + '/agents'}
+    class:list={['tab', { active: active === 'agents' }]}
+  >
+    Agents
+  </a>
+</nav>
+
+<style>
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 1rem;
+  }
+
+  .tab {
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .tab:hover {
+    color: #333;
+  }
+
+  .tab.active {
+    color: #0066cc;
+    border-bottom-color: #0066cc;
+  }
+</style>

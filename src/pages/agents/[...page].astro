@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import CardGrid from '../../components/CardGrid.astro';
+import Pagination from '../../components/Pagination.astro';
+import SearchBar from '../../components/SearchBar.astro';
+import Tabs from '../../components/Tabs.astro';
+import CodeModal from '../../components/CodeModal.tsx';
+
+export async function getStaticPaths({ paginate }) {
+  const agents = await getCollection('agents');
+  const sorted = agents.sort((a, b) =>
+    b.data.dateAdded.getTime() - a.data.dateAdded.getTime()
+  );
+
+  return paginate(sorted, { pageSize: 12 });
+}
+
+const { page } = Astro.props;
+
+// Prepare data for the modal
+const itemsWithCode = await Promise.all(
+  page.data.map(async (entry) => ({
+    slug: entry.slug,
+    type: 'agent',
+    name: entry.data.name,
+    code: entry.body,
+  }))
+);
+---
+
+<Layout title="Agents">
+  <main>
+    <h1>Skills & Agents Registry</h1>
+    <p class="subtitle">Community-driven collection of reusable skills and agents</p>
+
+    <SearchBar />
+
+    <Tabs active="agents" />
+
+    <CardGrid>
+      {page.data.map((entry) => (
+        <Card
+          name={entry.data.name}
+          description={entry.data.description}
+          author={entry.data.author}
+          tags={entry.data.tags}
+          slug={entry.slug}
+          type="agent"
+        />
+      ))}
+    </CardGrid>
+
+    <Pagination
+      currentPage={page.currentPage}
+      totalPages={page.lastPage}
+      baseUrl={import.meta.env.BASE_URL + '/agents'}
+    />
+
+    <CodeModal client:load items={itemsWithCode} />
+  </main>
+</Layout>
+
+<style>
+  .subtitle {
+    color: #666;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+</style>
