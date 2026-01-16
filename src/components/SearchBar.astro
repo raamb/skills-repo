@@ -12,10 +12,6 @@
 </div>
 
 <style>
-  .search-container {
-    margin: 1.5rem 0;
-  }
-
   #search-input {
     width: 100%;
     max-width: 400px;
@@ -37,13 +33,19 @@
 
   input?.addEventListener('input', (e) => {
     const query = (e.target as HTMLInputElement).value.toLowerCase();
+    const envFilter = document.getElementById('env-filter') as HTMLSelectElement;
+    const selectedEnv = envFilter?.value || 'all';
     const cards = document.querySelectorAll('.card');
 
     cards.forEach(card => {
       const title = card.querySelector('.card-title')?.textContent?.toLowerCase() || '';
       const desc = card.querySelector('.card-description')?.textContent?.toLowerCase() || '';
-      const matches = title.includes(query) || desc.includes(query);
-      (card as HTMLElement).style.display = matches ? '' : 'none';
+      const searchMatches = title.includes(query) || desc.includes(query);
+
+      const cardEnv = card.getAttribute('data-env') || '';
+      const envMatches = selectedEnv === 'all' || cardEnv === selectedEnv;
+
+      (card as HTMLElement).style.display = (searchMatches && envMatches) ? '' : 'none';
     });
   });
 </script>

@@ -6,12 +6,13 @@ interface Props {
   tags: string[];
   slug: string;
   type: 'skill' | 'agent';
+  platform?: string;
 }
 
-const { name, description, author, tags, slug, type } = Astro.props;
+const { name, description, author, tags, slug, type, platform } = Astro.props;
 ---
 
-<article class="card" data-slug={slug} data-type={type}>
+<article class="card" data-slug={slug} data-type={type} data-env={platform}>
   <h3 class="card-title">{name}</h3>
   <p class="card-description">{description}</p>
   <div class="card-meta">

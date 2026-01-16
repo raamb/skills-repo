@@ -1,0 +1,74 @@
+---
+interface Props {
+  platforms: string[];
+}
+
+const { platforms } = Astro.props;
+// Sort platforms alphabetically for consistent display
+const sortedPlatforms = [...platforms].sort();
+---
+
+<div class="env-filter-container">
+  <label for="env-filter">Environment:</label>
+  <select id="env-filter">
+    <option value="all">All Environments</option>
+    {sortedPlatforms.map(platform => (
+      <option value={platform}>{platform}</option>
+    ))}
+  </select>
+</div>
+
+<style>
+  .env-filter-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+  }
+
+  #env-filter {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  #env-filter:focus {
+    border-color: #0066cc;
+  }
+
+  #env-filter:hover {
+    border-color: #999;
+  }
+</style>
+
+<script>
+  const select = document.getElementById('env-filter') as HTMLSelectElement;
+
+  select?.addEventListener('change', (e) => {
+    const selectedEnv = (e.target as HTMLSelectElement).value;
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const searchQuery = searchInput?.value.toLowerCase() || '';
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+      const cardEnv = card.getAttribute('data-env') || '';
+      const envMatches = selectedEnv === 'all' || cardEnv === selectedEnv;
+
+      const title = card.querySelector('.card-title')?.textContent?.toLowerCase() || '';
+      const desc = card.querySelector('.card-description')?.textContent?.toLowerCase() || '';
+      const searchMatches = !searchQuery || title.includes(searchQuery) || desc.includes(searchQuery);
+
+      (card as HTMLElement).style.display = (envMatches && searchMatches) ? '' : 'none';
+    });
+  });
+</script>

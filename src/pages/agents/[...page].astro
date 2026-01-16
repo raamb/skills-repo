@@ -5,6 +5,7 @@ import Card from '../../components/Card.astro';
 import CardGrid from '../../components/CardGrid.astro';
 import Pagination from '../../components/Pagination.astro';
 import SearchBar from '../../components/SearchBar.astro';
+import EnvFilter from '../../components/EnvFilter.astro';
 import Tabs from '../../components/Tabs.astro';
 import CodeModal from '../../components/CodeModal.tsx';
 
@@ -14,10 +15,16 @@ export async function getStaticPaths({ paginate }) {
     b.data.dateAdded.getTime() - a.data.dateAdded.getTime()
   );
 
-  return paginate(sorted, { pageSize: 12 });
+  // Get unique platforms from all agents
+  const uniquePlatforms = [...new Set(agents.map(agent => agent.data.platform).filter(Boolean))];
+
+  return paginate(sorted, {
+    pageSize: 12,
+    props: { uniquePlatforms }
+  });
 }
 
-const { page } = Astro.props;
+const { page, uniquePlatforms } = Astro.props;
 
 // Prepare data for the modal
 const itemsWithCode = await Promise.all(
@@ -36,7 +43,10 @@ const itemsWithCode = await Promise.all(
     <h1>Skills & Agents Registry</h1>
     <p class="subtitle">Community-driven collection of reusable skills and agents</p>
 
-    <SearchBar />
+    <div class="filters">
+      <SearchBar />
+      <EnvFilter platforms={uniquePlatforms} />
+    </div>
 
     <Tabs active="agents" />
 
@@ -49,6 +59,7 @@ const itemsWithCode = await Promise.all(
           tags={entry.data.tags}
           slug={entry.slug}
           type="agent"
+          platform={entry.data.platform}
         />
       ))}
     </CardGrid>
@@ -68,5 +79,12 @@ const itemsWithCode = await Promise.all(
     color: #666;
     margin-top: 0;
     margin-bottom: 1.5rem;
+  }
+
+  .filters {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 </style>

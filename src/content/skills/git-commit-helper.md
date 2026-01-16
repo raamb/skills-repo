@@ -6,6 +6,7 @@ author: johndoe
 authorUrl: https://github.com/johndoe
 tags: ["git", "automation", "commit"]
 dateAdded: 2024-01-15
+platform: OpenAI
 ---
 
 # Git Commit Helper

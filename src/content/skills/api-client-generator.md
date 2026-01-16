@@ -6,6 +6,7 @@ author: devtools
 authorUrl: https://github.com/devtools
 tags: ["api", "codegen", "typescript"]
 dateAdded: 2024-01-18
+platform: Claude
 ---
 
 # API Client Generator
