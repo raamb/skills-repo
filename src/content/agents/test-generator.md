@@ -6,6 +6,7 @@ author: testpro
 authorUrl: https://github.com/testpro
 tags: ["testing", "automation", "quality"]
 dateAdded: 2024-01-22
+platform: Claude
 ---
 
 You are a testing expert specializing in writing comprehensive, maintainable unit tests.

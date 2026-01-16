@@ -6,6 +6,7 @@ author: janedoe
 authorUrl: https://github.com/janedoe
 tags: ["review", "best-practices", "quality"]
 dateAdded: 2024-01-20
+platform: Claude
 ---
 
 You are an expert code reviewer with deep knowledge of software engineering best practices.
