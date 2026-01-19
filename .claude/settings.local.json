@@ -8,7 +8,8 @@
       "Bash(npm run preview:*)",
       "Bash(python3:*)",
       "Bash(find:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(ls:*)"
     ]
   }
 }

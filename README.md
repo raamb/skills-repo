@@ -51,38 +51,56 @@ Use this exact format with proper frontmatter:
 
 ```markdown
 ---
-name: "Database Migration Helper"
-description: "Generates and validates SQL migration scripts with rollback support"
-author: "yourusername"
-authorUrl: "https://github.com/yourusername"
+name: Database Migration Helper
+description: Generates and validates SQL migration scripts with rollback support for database schema changes
+allowed-tools: Read, Write, Bash(psql:*)
+platform: Claude
+author: yourusername
+authorUrl: https://github.com/yourusername
 tags: ["database", "sql", "migration"]
 dateAdded: 2024-01-15
 ---
 
-\`\`\`python
 # Database Migration Helper
-# Generates SQL migration scripts with automatic rollback
 
-import hashlib
-from datetime import datetime
+Generates SQL migration scripts with automatic rollback support.
 
-def generate_migration(changes: dict) -> str:
-    """
-    Generate a timestamped migration file.
+## Overview
 
-    Args:
-        changes: Dictionary of database changes
+This skill helps you create timestamped database migration files with proper up/down migration support.
 
-    Returns:
-        SQL migration script
-    """
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    migration = f"-- Migration {timestamp}\n\n"
+## Usage
 
-    # Add your implementation here
+1. **Analyze the current schema**
+2. **Generate migration file** with timestamp
+3. **Include rollback statements**
+4. **Validate SQL syntax**
 
-    return migration
+## Example Migration
+
+\`\`\`sql
+-- Migration: 20240115120000_add_users_table
+
+-- Up Migration
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX idx_users_email ON users(email);
+
+-- Down Migration (Rollback)
+DROP INDEX IF EXISTS idx_users_email;
+DROP TABLE IF EXISTS users;
 \`\`\`
+
+## Best Practices
+
+- Always include both up and down migrations
+- Use descriptive migration names
+- Test rollback before deploying
+- Keep migrations atomic and focused
 ```
 
 **5. Test Your Skill Locally**
@@ -142,40 +160,57 @@ Use this exact format:
 
 ```markdown
 ---
-name: "Security Auditor"
-description: "Reviews code for security vulnerabilities and suggests fixes"
-author: "yourusername"
-authorUrl: "https://github.com/yourusername"
+name: Security Auditor
+description: Reviews code for security vulnerabilities and suggests fixes with detailed remediation steps
+platform: Claude
+model: sonnet
+author: yourusername
+authorUrl: https://github.com/yourusername
 tags: ["security", "audit", "vulnerability"]
-model: "claude-sonnet-4"
 dateAdded: 2024-01-15
 ---
 
-\`\`\`yaml
-name: Security Auditor
-description: Reviews code for security vulnerabilities
+You are a security expert specializing in code auditing and vulnerability assessment.
 
-system_prompt: |
-  You are a security expert specializing in code auditing.
+## Your Responsibilities
 
-  Your responsibilities:
-  - Identify security vulnerabilities (XSS, SQL injection, CSRF, etc.)
-  - Check for sensitive data exposure
-  - Review authentication and authorization logic
-  - Suggest secure coding practices
-  - Provide actionable remediation steps
+- **Identify Security Vulnerabilities**: XSS, SQL injection, CSRF, authentication issues
+- **Check for Sensitive Data Exposure**: API keys, credentials, PII leakage
+- **Review Authentication & Authorization**: Access control, session management
+- **Suggest Secure Coding Practices**: Input validation, output encoding, parameterized queries
+- **Provide Actionable Remediation**: Concrete steps to fix each vulnerability
 
-  Always explain WHY something is a security risk and HOW to fix it.
+## Approach
 
-tools:
-  - read_file
-  - search_code
-  - grep
+1. **Analyze the code systematically** from entry points to data storage
+2. **Look for common vulnerability patterns** in the OWASP Top 10
+3. **Explain WHY** each issue is a security risk
+4. **Show HOW** to fix it with code examples
+5. **Prioritize findings** by severity: Critical > High > Medium > Low
 
-settings:
-  temperature: 0.3
-  max_tokens: 4000
+## Output Format
+
+For each vulnerability found:
+
+**Severity**: [Critical/High/Medium/Low]
+**Location**: `file.js:42`
+**Issue**: [Brief description]
+**Risk**: [Potential impact]
+**Fix**: [Concrete solution with code example]
+
+## Example
+
+**Severity**: High
+**Location**: `auth.js:23`
+**Issue**: Password stored in plain text
+**Risk**: If database is compromised, all user passwords are exposed
+**Fix**: Use bcrypt to hash passwords:
+\`\`\`javascript
+const bcrypt = require('bcrypt');
+const hashedPassword = await bcrypt.hash(password, 10);
 \`\`\`
+
+Always maintain a constructive and educational tone.
 ```
 
 **5-7. Test, Commit, Push, and PR** (same as Skills)
@@ -201,48 +236,68 @@ Before submitting your PR, ensure you've completed these items:
 
 | Field | Type | Required | Constraints | Example |
 |-------|------|----------|-------------|---------|
-| `name` | string | ✅ Yes | 3-50 characters | `"Git Commit Helper"` |
-| `description` | string | ✅ Yes | 10-200 characters | `"Analyzes staged changes and generates conventional commit messages"` |
-| `author` | string | ✅ Yes | GitHub username | `"johndoe"` |
-| `authorUrl` | string | ❌ No | Valid URL | `"https://github.com/johndoe"` |
+| `name` | string | ✅ Yes | Descriptive name | `Git Commit Helper` |
+| `description` | string | ✅ Yes | 10-200 characters | `Analyzes staged changes and generates conventional commit messages` |
+| `platform` | string | ✅ Yes | One of: Claude, OpenAI, GitHub Copilot, Other | `Claude` |
+| `allowed-tools` | string | ❌ No | Comma-separated tool list | `Read, Write, Bash(git:*)` |
+| `author` | string | ❌ No | GitHub username | `johndoe` |
+| `authorUrl` | string | ❌ No | Valid URL | `https://github.com/johndoe` |
 | `tags` | string[] | ❌ No | Max 5 items | `["git", "automation", "commit"]` |
 | `dateAdded` | date | ❌ No | YYYY-MM-DD format (auto-defaults to today) | `2024-01-15` |
 
-**Code Block**: Must contain actual code in any language (Python, JavaScript, Bash, etc.)
+**Content**: Must contain detailed markdown documentation explaining the skill with examples and best practices.
 
 ### Agents Schema
 
 | Field | Type | Required | Constraints | Example |
 |-------|------|----------|-------------|---------|
-| `name` | string | ✅ Yes | 3-50 characters | `"Code Reviewer"` |
-| `description` | string | ✅ Yes | 10-200 characters | `"Reviews code changes and provides constructive feedback"` |
-| `author` | string | ✅ Yes | GitHub username | `"janedoe"` |
-| `authorUrl` | string | ❌ No | Valid URL | `"https://github.com/janedoe"` |
+| `name` | string | ✅ Yes | Descriptive name | `Code Reviewer` |
+| `description` | string | ✅ Yes | 10-200 characters | `Reviews code changes and provides constructive feedback` |
+| `platform` | string | ✅ Yes | One of: Claude, OpenAI, GitHub Copilot, Other | `Claude` |
+| `model` | string | ❌ No | Model name | `sonnet` or `opus` |
+| `author` | string | ❌ No | GitHub username | `janedoe` |
+| `authorUrl` | string | ❌ No | Valid URL | `https://github.com/janedoe` |
 | `tags` | string[] | ❌ No | Max 5 items | `["review", "quality"]` |
-| `model` | string | ❌ No | Claude model name | `"claude-sonnet-4"` |
 | `dateAdded` | date | ❌ No | YYYY-MM-DD format (auto-defaults to today) | `2024-01-20` |
 
-**Code Block**: Must contain YAML agent configuration with system_prompt and tools
+**Content**: Must contain the agent's system prompt with clear responsibilities, approach, and output format in markdown.
 
 ## Common Mistakes to Avoid
 
 ### ❌ Bad Frontmatter
 ```markdown
 ---
-name: my skill          # Missing quotes
-description: test       # Too short (< 10 chars)
-author:                 # Empty field
+name: my skill                          # Not descriptive enough
+description: test                       # Too short (< 10 chars)
+platform:                               # Missing required field
+author:                                 # Empty (if included, must have value)
 tags: ["a", "b", "c", "d", "e", "f"]  # Too many tags (> 5)
 ---
 ```
 
-### ✅ Good Frontmatter
+### ✅ Good Frontmatter for Skills
 ```markdown
 ---
-name: "API Response Validator"
-description: "Validates API responses against JSON schema with detailed error reporting"
-author: "johndoe"
-authorUrl: "https://github.com/johndoe"
+name: API Response Validator
+description: Validates API responses against JSON schema with detailed error reporting
+platform: Claude
+allowed-tools: Read, Write
+author: johndoe
+authorUrl: https://github.com/johndoe
+tags: ["api", "validation", "testing"]
+dateAdded: 2024-01-15
+---
+```
+
+### ✅ Good Frontmatter for Agents
+```markdown
+---
+name: API Response Validator Agent
+description: Automatically validates API responses and suggests improvements
+platform: Claude
+model: sonnet
+author: johndoe
+authorUrl: https://github.com/johndoe
 tags: ["api", "validation", "testing"]
 dateAdded: 2024-01-15
 ---
@@ -266,16 +321,17 @@ dateAdded: 2024-01-15
 1. **Include Complete Examples**: Show how to use your skill with real examples
 2. **Add Error Handling**: Include try-catch blocks and validation
 3. **Document Parameters**: Clearly explain function parameters and return values
-4. **Use Type Hints**: Include type hints for Python or TypeScript
-5. **Keep It Focused**: One skill should do one thing well
+4. **Specify Platform**: Set the correct platform field (Claude, OpenAI, GitHub Copilot, Other)
+5. **List Tools**: If your skill uses specific tools, include them in `allowed-tools`
+6. **Keep It Focused**: One skill should do one thing well
 
 ### For Agents
 
 1. **Clear System Prompt**: Explain the agent's role, responsibilities, and behavior
-2. **Specific Tools**: Only include tools the agent actually needs
-3. **Set Appropriate Temperature**: Use lower (0.2-0.4) for analytical tasks, higher (0.7-0.9) for creative tasks
-4. **Define Success Criteria**: Explain what good output looks like
-5. **Include Examples**: Show example interactions in comments
+2. **Specify Platform & Model**: Set platform (e.g., Claude) and optionally model (e.g., sonnet, opus)
+3. **Define Success Criteria**: Explain what good output looks like
+4. **Include Examples**: Show example interactions and output formats
+5. **Keep Instructions Clear**: Use structured markdown with headings and bullet points
 
 ## Recommended Tags
 
@@ -297,8 +353,10 @@ Your submission will be automatically validated against the schema. Common error
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `name must be at least 3 characters` | Name too short | Use a descriptive name (3-50 chars) |
-| `description must be at least 10 characters` | Description too short | Write a detailed description (10-200 chars) |
+| `name is required` | Missing name field | Add a descriptive name |
+| `description is required` | Missing description field | Add a detailed description (10-200 chars) |
+| `platform is required` | Missing platform field | Add platform: Claude, OpenAI, GitHub Copilot, or Other |
+| `description must be at least 10 characters` | Description too short | Write a detailed description |
 | `tags must contain at most 5 element(s)` | Too many tags | Reduce to 5 most relevant tags |
 | `authorUrl must be a valid URL` | Invalid URL format | Use full URL: `https://github.com/username` |
 
@@ -337,7 +395,13 @@ npm run preview
 A: No, please submit one skill or agent per PR to make reviews easier.
 
 **Q: What programming languages are supported for skills?**
-A: Any language! Python, JavaScript, TypeScript, Bash, Go, Rust, etc.
+A: Any language! Python, JavaScript, TypeScript, Bash, Go, Rust, etc. Skills are language-agnostic documentation.
+
+**Q: What is the `platform` field?**
+A: The platform field indicates which AI coding assistant the skill/agent is designed for (Claude, OpenAI, GitHub Copilot, or Other). This helps users filter and find relevant content for their tools.
+
+**Q: What's the difference between a skill and an agent?**
+A: Skills are instructional documents/guides for performing specific tasks. Agents are AI system prompts with defined behaviors, responsibilities, and output formats.
 
 **Q: How long does PR review take?**
 A: Usually within 1-3 days. Make sure all checklist items are complete to speed up the process.
@@ -346,4 +410,7 @@ A: Usually within 1-3 days. Make sure all checklist items are complete to speed 
 A: Yes! Submit a PR with improvements. Please explain what changed and why.
 
 **Q: What if my skill requires external dependencies?**
-A: Include installation instructions in comments at the top of your code.
+A: Document all dependencies clearly in your markdown with installation instructions.
+
+**Q: Do I need to include quotes around field values in frontmatter?**
+A: No! Use unquoted strings for most fields. Arrays (tags) should use JSON format: `["tag1", "tag2"]`
